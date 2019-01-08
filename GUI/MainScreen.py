@@ -99,7 +99,7 @@ class MainScreen:
 
         self.RecordTypeButton = Button(master,text = "RecordType",command = self.OpenRecordTypeListForm)
         self.RecordTypeButton.grid(row=4,column=1,sticky="NSEW")
-        self.RecordTypeButtonIcon = PhotoImage(file=".\\Resources\\angel.png")
+        self.RecordTypeButtonIcon = PhotoImage(file=".\\Resources\\recordType.png")
         self.RecordTypeButton.config(image=self.RecordTypeButtonIcon,width="32",height="32")
 
         self.ProjectsCombo = ttk.Combobox(master,textvariable = self.ProjectValue)
