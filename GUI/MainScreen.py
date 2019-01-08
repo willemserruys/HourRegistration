@@ -10,6 +10,7 @@ import time
 from GUI.TimeRecordEditForm import *
 from GUI.ExportToExcelForm import *
 from GUI.ProjectListForm import *
+from GUI.RecordTypeListForm import *
 import os
 import threading
 import queue
@@ -95,6 +96,11 @@ class MainScreen:
         self.BackupButton.grid(row=4,column=0,sticky="NSEW")
         self.BackupButtonIcon = PhotoImage(file=".\\Resources\\angel.png")
         self.BackupButton.config(image=self.BackupButtonIcon,width="32",height="32")
+
+        self.RecordTypeButton = Button(master,text = "RecordType",command = self.OpenRecordTypeListForm)
+        self.RecordTypeButton.grid(row=4,column=1,sticky="NSEW")
+        self.RecordTypeButtonIcon = PhotoImage(file=".\\Resources\\angel.png")
+        self.RecordTypeButton.config(image=self.RecordTypeButtonIcon,width="32",height="32")
 
         self.ProjectsCombo = ttk.Combobox(master,textvariable = self.ProjectValue)
         self.ProjectsCombo.grid(row = 0,column = 3,columnspan = 2,sticky='NSEW')
@@ -332,6 +338,13 @@ class MainScreen:
         self.Cache.RefreshAllStaticData()
         self.FillCombos()
         projectListForm.Master.destroy() 
+
+    def OpenRecordTypeListForm(self):
+        recordTypeListForm = RecordTypeListForm(self.Cache,self.dbConnection)
+        recordTypeListForm.Show()     
+        self.Cache.RefreshAllStaticData()
+        self.FillCombos()
+        recordTypeListForm.Master.destroy() 
 
     def ExportToExcel(self):
         excel = ExportToExcelForm(self.dbConnection)
