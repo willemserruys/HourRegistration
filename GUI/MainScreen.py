@@ -96,23 +96,27 @@ class MainScreen:
         self.BackupButtonIcon = PhotoImage(file=".\\Resources\\angel.png")
         self.BackupButton.config(image=self.BackupButtonIcon,width="32",height="32")
 
-        self.ProjectsCombo = ttk.Combobox(master,width = 100,textvariable = self.ProjectValue)
-        self.ProjectsCombo.grid(row = 0,column = 3,sticky='NSEW')
+        self.ProjectsCombo = ttk.Combobox(master,textvariable = self.ProjectValue)
+        self.ProjectsCombo.grid(row = 0,column = 3,columnspan = 2,sticky='NSEW')
 
         self.RecordTypeCombo = ttk.Combobox(master,textvariable = self.RecordTypeValue)
-        self.RecordTypeCombo.grid(row = 1,column = 3,sticky='NSEW')
+        self.RecordTypeCombo.grid(row = 1,column = 3,columnspan = 2,sticky='NSEW')
 
         self.DescriptionTextBox = Entry(master,textvariable = self.DescriptionValue)
-        self.DescriptionTextBox.grid(row = 2,column = 3,sticky='NSEW')
+        self.DescriptionTextBox.grid(row = 2,column = 3,columnspan = 2,sticky='NSEW')
 
-        self.RecordsListBox = Listbox(master)
-        self.RecordsListBox.grid(row = 3,column =3, rowspan = 7,columnspan = 3,sticky='NSEW')
+        self.RecordsListBox = Listbox(master,width = 50)
+        self.RecordsListBox.grid(row = 3,column =3, rowspan = 7,columnspan = 1,sticky='NSEW')
+
+        self.CommentListBox = Listbox(master,width = 70)
+        self.CommentListBox.grid(row = 3,column =4, rowspan = 7,columnspan = 2,sticky='NSEW')
+        self.CommentListBox.bindtags((self.CommentListBox, master, "all"))
 
         self.EventLogExplanationLabel = Label(master,text="Laatst aangemeld op: ")
-        self.EventLogExplanationLabel.grid(row=0,column=4)
+        self.EventLogExplanationLabel.grid(row=0,column=5)
 
         self.EventLogLabel = Label(master,textvariable = self.LastLogon)
-        self.EventLogLabel.grid(row=1,column = 4)
+        self.EventLogLabel.grid(row=1,column = 5)
 
         self.DaysCombo.bind("<<ComboboxSelected>>",self.DaysCombo_SelectedItemChanged)
         self.RecordsListBox.bind("<<ListboxSelect>>",self.RecordsListBox_SelectedItemChanged)
@@ -198,6 +202,7 @@ class MainScreen:
     def RecordsListBox_SelectedItemChanged(self,eventObject):
         self.SetButtonsEnabled()
 
+
     def DaysCombo_SelectedItemChanged(self,eventObject):
         self.RefreshTimeRecords()
         self.SetButtonsEnabled()
@@ -210,6 +215,7 @@ class MainScreen:
             self.FillTimeRecords(self.Cache.TimeRecordViews)
         else:
             self.RecordsListBox.delete(0,END)
+            self.CommentListBox.delete(0,END)
 
     def Show(self):
         self.Master.mainloop()
@@ -230,8 +236,10 @@ class MainScreen:
 
     def FillTimeRecords(self,timeRecordViews):
         self.RecordsListBox.delete(0,END)
+        self.CommentListBox.delete(0,END)
         for item in timeRecordViews:     
             self.RecordsListBox.insert(END,item)
+            self.CommentListBox.insert(END,item.Description)
         for i in range(0,self.RecordsListBox.size()):
             item = timeRecordViews[i]
             itemStatus = item.Status
@@ -240,7 +248,7 @@ class MainScreen:
             elif itemStatus == 'Gestopt':
                 self.RecordsListBox.itemconfig(i,{'bg':'green'})
             elif itemStatus == 'Gekopieerd':
-                self.RecordsListBox.itemconfig(i,{'bg':'orange'})              
+                self.RecordsListBox.itemconfig(i,{'bg':'orange'})            
 
     def StartRecording(self):
         recordIndex = self.RecordTypeCombo.current()

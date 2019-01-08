@@ -1,5 +1,5 @@
 class TimeRecordView:
-    def __init__(self,ID,startHour,endHour,description,project,recordType,status,date,oneNoteLink,km):
+    def __init__(self, ID, startHour, endHour, description, project, recordType, status, date, oneNoteLink, km):
         self.ID = ID
         self.StartHour = startHour
         self.EndHour = endHour
@@ -11,6 +11,5 @@ class TimeRecordView:
         self.OneNoteLink = oneNoteLink
         self.Km = km
 
-
     def __str__(self):
-        return str(self.StartHour) + '     ' + str(self.EndHour) + '       ' + self.Project + '    ' + self.RecordType + '    ' + self.Description + '    ' + self.Status
+        return str(self.StartHour) + '     ' + str(self.EndHour) + '       ' + self.Project
