@@ -89,8 +89,10 @@ class TimeRecordEditForm:
         Tr.StartHour = self.GetDate(timeString,self.StartDate.get())
         if not self.EndDate.get() =='':           
             Tr.EndHour = self.GetDate(Tr.StartHour,self.EndDate.get())
-        Tr.ProjectID = self.Cache.ActiveProjects[self.ProjectsCombo.current()].ID
-        Tr.RecordTypeID = self.Cache.RecordTypes[self.RecordTypeCombo.current()].ID
+        if not self.ProjectsCombo.current()==-1:
+            Tr.ProjectID = self.Cache.ActiveProjects[self.ProjectsCombo.current()].ID
+        if not self.RecordTypeCombo.current()==-1:
+            Tr.RecordTypeID = self.Cache.RecordTypes[self.RecordTypeCombo.current()].ID
         Tr.Km = self.KmValue.get()
 
         oneNoteLink = self.OneNoteValue.get()
