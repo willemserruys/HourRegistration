@@ -7,7 +7,7 @@ from BusinessLogic import BLProject,BLRecordType,BLTimeRecordView,BLTimeRecord,T
 from BusinessEntities import TimeRecord,TimeRecordStatusEnum,DayView,TimeRecordView
 from DataAccess import DAController
 import time
-from GUI.TimeRecordEditForm import *
+from GUI.TimeRecordEditForm import TimeRecordEditForm
 from GUI.ExportToExcelForm import *
 from GUI.ProjectListForm import *
 from GUI.RecordTypeListForm import *
