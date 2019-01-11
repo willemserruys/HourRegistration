@@ -6,9 +6,17 @@ import matplotlib.pyplot as plt
 
 from python_linq import From
 
+import plotly
+import plotly.plotly as py
+import plotly.graph_objs as go
+
 
 class ExportToGraphsForm:
     def __init__(self, conn):
+        plotly.tools.set_credentials_file(
+            username='wpserruy', api_key='lDDsb4klBruI5B76RAI5')
+        plotly.tools.set_config_file(world_readable=True,
+                                     sharing='public')
         master = Toplevel()
         self.Master = master
         self.Connection = conn
@@ -42,12 +50,12 @@ class ExportToGraphsForm:
         toDate = self.DateTo.get()
         blTrV = BLTimeRecordView.BLTimeRecordView(self.Connection)
         timeRecords = blTrV.GetAllBetweenDates(fromDate, toDate)
-        self.CreateGraph(timeRecords)
+        self.CreateGraph(timeRecords, fromDate, toDate)
 
     def Show(self):
         self.Master.mainloop()
 
-    def CreateGraph(self, timeRecords):
+    def CreateGraph(self, timeRecords, fromdate, todate):
         # Make a fake dataset:
         records = (From(timeRecords).groupBy(
             lambda x: x.Project,
@@ -58,16 +66,13 @@ class ExportToGraphsForm:
         height = []
         for record in records:
             bars.append(record.key)
-            height.append(From(record).sum(lambda x: x))
+            height.append(From(record).sum(lambda x: x)/60)
         print(bars)
         print(height)
-        y_pos = np.arange(len(bars))
 
-        # Create bars
-        plt.bar(y_pos, height)
+        data = [go.Bar(
+            x=bars,
+            y=height
+        )]
 
-        # Create names on the x-axis
-        plt.xticks(y_pos, bars)
-
-        # Show graphic
-        plt.show()
+        py.plot(data, filename="data from " + fromdate + "-" + todate)
