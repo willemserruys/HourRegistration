@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from python_linq import From
 
 
-class ExportToExcelForm:
+class ExportToGraphsForm:
     def __init__(self, conn):
         master = Toplevel()
         self.Master = master
@@ -15,10 +15,10 @@ class ExportToExcelForm:
         self.DateFrom = StringVar()
         self.DateTo = StringVar()
 
-        self.Master.title("Export To Excel")
+        self.Master.title("Export To Graphs")
 
         self.ExplanationLabel = Label(
-            master, text='Export to excel between dates')
+            master, text='Export to graph between dates')
         self.ExplanationLabel.grid(row=0, column=0, columnspan=2)
 
         self.DateFromLabel = Label(
@@ -38,18 +38,36 @@ class ExportToExcelForm:
         self.OKButton.grid(row=3, column=0, sticky='NSEW')
 
     def Confirm(self):
-        blE = BLExcel.BLExcel(self.Connection)
         fromDate = self.DateFrom.get()
         toDate = self.DateTo.get()
         blTrV = BLTimeRecordView.BLTimeRecordView(self.Connection)
         timeRecords = blTrV.GetAllBetweenDates(fromDate, toDate)
-        result = messagebox.askquestion(
-            "Validatie", "{0} records geselecteerd. Doorgaan?".format(len(timeRecords)), icon='warning')
-        if result == 'yes':
-            file_path = filedialog.askdirectory()
-            file_path = file_path + "/" + Globals.GetCurrentDay()
-            blE.ExportToExcel(timeRecords, file_path)
-            self.Master.quit()
+        self.CreateGraph(timeRecords)
 
     def Show(self):
         self.Master.mainloop()
+
+    def CreateGraph(self, timeRecords):
+        # Make a fake dataset:
+        records = (From(timeRecords).groupBy(
+            lambda x: x.Project,
+            transform=lambda x: x.Minutes
+        ))
+
+        bars = []
+        height = []
+        for record in records:
+            bars.append(record.key)
+            height.append(From(record).sum(lambda x: x))
+        print(bars)
+        print(height)
+        y_pos = np.arange(len(bars))
+
+        # Create bars
+        plt.bar(y_pos, height)
+
+        # Create names on the x-axis
+        plt.xticks(y_pos, bars)
+
+        # Show graphic
+        plt.show()

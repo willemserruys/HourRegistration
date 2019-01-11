@@ -1,5 +1,4 @@
-from tkinter import *
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, Button, Tk, StringVar, Label, Entry
 from BusinessLogic import BLProject, BLRecordType, BLTimeRecordView, BLTimeRecord, TimeRecordValidation, BLDayView, Cache, Globals
 from BusinessEntities import TimeRecord, TimeRecordStatusEnum, DayView, Project, RecordType
 import sqlite3
