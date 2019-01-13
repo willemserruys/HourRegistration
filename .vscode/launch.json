@@ -5,16 +5,16 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Main",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/Main.py"
-        },
-        {
             "name": "Python: TestFile",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/Test.py"
+        },
+        {
+            "name": "Python: Main",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/Main.py"
         },
         {
             "name": "Python: Current File",
