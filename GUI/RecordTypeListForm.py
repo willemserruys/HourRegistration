@@ -1,9 +1,8 @@
-from tkinter import *
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, Button, Tk, StringVar, Label, Entry, Listbox, END
 from BusinessLogic import BLProject, BLRecordType, BLTimeRecordView, BLTimeRecord, TimeRecordValidation, BLDayView, Cache, Globals
 from BusinessEntities import TimeRecord, TimeRecordStatusEnum, DayView
 import time
-from GUI.RecordTypeEditForm import *
+from GUI.RecordTypeEditForm import RecordTypeEditForm
 
 
 class RecordTypeListForm:

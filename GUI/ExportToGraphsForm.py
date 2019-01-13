@@ -6,19 +6,27 @@ import matplotlib.pyplot as plt
 
 from python_linq import From
 
+import plotly
+import plotly.plotly as py
+import plotly.graph_objs as go
 
-class ExportToExcelForm:
+
+class ExportToGraphsForm:
     def __init__(self, conn):
+        plotly.tools.set_credentials_file(
+            username='wpserruy', api_key='lDDsb4klBruI5B76RAI5')
+        plotly.tools.set_config_file(world_readable=True,
+                                     sharing='public')
         master = Toplevel()
         self.Master = master
         self.Connection = conn
         self.DateFrom = StringVar()
         self.DateTo = StringVar()
 
-        self.Master.title("Export To Excel")
+        self.Master.title("Export To Graphs")
 
         self.ExplanationLabel = Label(
-            master, text='Export to excel between dates')
+            master, text='Export to graph between dates')
         self.ExplanationLabel.grid(row=0, column=0, columnspan=2)
 
         self.DateFromLabel = Label(
@@ -38,18 +46,33 @@ class ExportToExcelForm:
         self.OKButton.grid(row=3, column=0, sticky='NSEW')
 
     def Confirm(self):
-        blE = BLExcel.BLExcel(self.Connection)
         fromDate = self.DateFrom.get()
         toDate = self.DateTo.get()
         blTrV = BLTimeRecordView.BLTimeRecordView(self.Connection)
         timeRecords = blTrV.GetAllBetweenDates(fromDate, toDate)
-        result = messagebox.askquestion(
-            "Validatie", "{0} records geselecteerd. Doorgaan?".format(len(timeRecords)), icon='warning')
-        if result == 'yes':
-            file_path = filedialog.askdirectory()
-            file_path = file_path + "/" + Globals.GetCurrentDay()
-            blE.ExportToExcel(timeRecords, file_path)
-            self.Master.quit()
+        self.CreateGraph(timeRecords, fromDate, toDate)
 
     def Show(self):
         self.Master.mainloop()
+
+    def CreateGraph(self, timeRecords, fromdate, todate):
+        # Make a fake dataset:
+        records = (From(timeRecords).groupBy(
+            lambda x: x.Project,
+            transform=lambda x: x.Minutes
+        ))
+
+        bars = []
+        height = []
+        for record in records:
+            bars.append(record.key)
+            height.append(From(record).sum(lambda x: x)/60)
+        print(bars)
+        print(height)
+
+        data = [go.Bar(
+            x=bars,
+            y=height
+        )]
+
+        py.plot(data, filename="data from " + fromdate + "-" + todate)

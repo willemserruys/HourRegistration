@@ -1,16 +1,16 @@
 
 #Import Modules
 
-from tkinter import *
-from tkinter import ttk,messagebox
+from tkinter import ttk, messagebox, filedialog, Toplevel, StringVar, Label, Entry, Button, Listbox, END, NORMAL, DISABLED, PhotoImage
 from BusinessLogic import BLProject,BLRecordType,BLTimeRecordView,BLTimeRecord,TimeRecordValidation,BLDayView, Cache, Globals
 from BusinessEntities import TimeRecord,TimeRecordStatusEnum,DayView,TimeRecordView
 from DataAccess import DAController
 import time
 from GUI.TimeRecordEditForm import TimeRecordEditForm
-from GUI.ExportToExcelForm import *
-from GUI.ProjectListForm import *
-from GUI.RecordTypeListForm import *
+from GUI.ExportToExcelForm import ExportToExcelForm
+from GUI.ExportToGraphsForm import ExportToGraphsForm
+from GUI.ProjectListForm import ProjectListForm
+from GUI.RecordTypeListForm import RecordTypeListForm
 import os
 import threading
 import queue
@@ -101,6 +101,11 @@ class MainScreen:
         self.RecordTypeButton.grid(row=4,column=1,sticky="NSEW")
         self.RecordTypeButtonIcon = PhotoImage(file=".\\Resources\\recordType.png")
         self.RecordTypeButton.config(image=self.RecordTypeButtonIcon,width="32",height="32")
+
+        self.ExportToGraphsButton = Button(master,text = "ExportToGraphs",command = self.ExportToGraph)
+        self.ExportToGraphsButton.grid(row=4,column=2,sticky="NSEW")
+        self.ExportToGraphsButtonIcon = PhotoImage(file=".\\Resources\\chart.png")
+        self.ExportToGraphsButton.config(image=self.ExportToGraphsButtonIcon,width="32",height="32")
 
         self.ProjectsCombo = ttk.Combobox(master,textvariable = self.ProjectValue)
         self.ProjectsCombo.grid(row = 0,column = 3,columnspan = 2,sticky='NSEW')
@@ -319,7 +324,7 @@ class MainScreen:
         edit.Master.destroy()
 
     def ShowNewEditForm(self):
-        tr = TimeRecordView.TimeRecordView(None,None,None,None,None,None,None,None,None,None)
+        tr = TimeRecordView.TimeRecordView(None,None,None,None,None,None,None,None,None,None,None)
         index = self.DaysCombo.current()
         tr.Date = self.Cache.DayViews[index].Date
         edit = TimeRecordEditForm(self.dbConnection,tr,self.Cache)
@@ -350,6 +355,11 @@ class MainScreen:
         excel = ExportToExcelForm(self.dbConnection)
         excel.Show()
         excel.Master.destroy()
+
+    def ExportToGraph(self):
+        graph = ExportToGraphsForm(self.dbConnection)
+        graph.Show()
+        graph.Master.destroy()
 
     def DeleteRecord(self):
         bl = BLTimeRecord.BLTimeRecord(self.dbConnection)
