@@ -1,15 +1,15 @@
 class TimeRecordView:
-    def __init__(self, ID, startHour, endHour, description, project, recordType, status, date, oneNoteLink, km):
-        self.ID = ID
-        self.StartHour = startHour
-        self.EndHour = endHour
-        self.Project = project
-        self.RecordType = recordType
-        self.Description = description
-        self.Status = status
-        self.Date = date
-        self.OneNoteLink = oneNoteLink
-        self.Km = km
+        __tablename__ = "vwTimeRecord"
+        ID = Column()
+        StartHour = startHour
+        EndHour = endHour
+        Project = project
+        RecordType = recordType
+        Description = description
+        Status = status
+        Date = date
+        OneNoteLink = oneNoteLink
+        Km = km
 
     def __str__(self):
         return str(self.StartHour) + '     ' + str(self.EndHour) + '       ' + self.Project

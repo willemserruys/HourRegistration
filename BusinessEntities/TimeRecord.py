@@ -1,16 +1,22 @@
-class TimeRecord:
-    def __init__(self,ID,startHour,endHour,projectID,recordTypeID,description,statusID,minutes,oneNoteLink,km):
-        self.ID = ID
-        self.StartHour = startHour
-        self.EndHour = endHour
-        self.ProjectID = projectID
-        self.RecordTypeID = recordTypeID 
-        self.Description = description
-        self.StatusID = statusID
-        self.Minutes = minutes
-        self.OneNoteLink = oneNoteLink
-        self.Km = km
+from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
+Base = declarative_base()
 
+
+class TimeRecord(Base):
+    __tablename__ = "tblTimeRecord"
+    ID = Column(Integer, primary_key=True)
+    StartHour = Column(String, nullable=True)
+    EndHour = Column(String, nullable=False)
+    ProjectID = Column(Integer, nullable=False)
+    RecordType = relationship("RecordType")
+    RecordTypeID = Column(Integer, ForeignKey('tblRecordType.ID'))
+    Description = Column(String, nullable=False)
+    StatusID = Column(Integer, nullable=False)
+    Minutes = Column(Integer, nullable=True)
+    OneNote = Column(String, nullable=True)
+    Km = Column(Integer, nullable=True)
 
     def __str__(self):
         return self.Description
