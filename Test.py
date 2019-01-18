@@ -5,20 +5,20 @@ from DataAccess.DataBaseConnection import DataBaseConnection
 import sqlite3
 
 db = DataBaseConnection()
-recordType = RecordType()
 timeRecord = TimeRecord()
-
-db.Base.metadata.create_all(db.Engine)
-timeRecord.ProjectID = 2
+recordType = RecordType()
+recordType.Description = "test"
+recordType.ExterneID = "test"
+timeRecord.Description = "test"
 timeRecord.RecordTypeID = 200
-timeRecord.Description = "Test"
 timeRecord.StatusID = 1
+timeRecord.ProjectID = 1
+db.Base.metadata.create_all(db.Engine)
 
 
 try:
     db.Session.add(recordType)
     db.Session.add(timeRecord)
-    db.Session.add(project)
     db.Session.commit()
 except sqlite3.IntegrityError as e:
     print(e)
