@@ -357,7 +357,7 @@ class MainScreen:
         excel.Master.destroy()
 
     def ExportToGraph(self):
-        graph = ExportToGraphsForm(self.dbConnection)
+        graph = ExportToGraphsForm(self.dbConnection,self.Cache)
         graph.Show()
         graph.Master.destroy()
 

@@ -1,5 +1,5 @@
 from tkinter import ttk, messagebox, filedialog, Toplevel, StringVar, Label, Entry, Button
-from BusinessLogic import BLExcel, BLTimeRecordView, Globals
+from BusinessLogic import BLExcel, BLTimeRecordView, Globals, Cache
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -12,7 +12,9 @@ import plotly.graph_objs as go
 
 
 class ExportToGraphsForm:
-    def __init__(self, conn):
+    def __init__(self, conn, cache):
+        self.Cache = cache
+
         plotly.tools.set_credentials_file(
             username='wpserruy', api_key='lDDsb4klBruI5B76RAI5')
         plotly.tools.set_config_file(world_readable=True,
@@ -22,6 +24,7 @@ class ExportToGraphsForm:
         self.Connection = conn
         self.DateFrom = StringVar()
         self.DateTo = StringVar()
+        self.ProjectValue = StringVar()
 
         self.Master.title("Export To Graphs")
 
@@ -42,8 +45,14 @@ class ExportToGraphsForm:
         self.DateToTextBox = Entry(master, textvariable=self.DateTo)
         self.DateToTextBox.grid(row=2, column=1, sticky='NSEW')
 
+        self.ProjectsCombo = ttk.Combobox(
+            master, textvariable=self.ProjectValue)
+        self.ProjectsCombo.grid(row=3, column=0, columnspan=2, sticky='NSEW')
+
+        self.ProjectsCombo['value'] = self.Cache.ActiveProjects
+
         self.OKButton = Button(master, text="OK", command=self.Confirm)
-        self.OKButton.grid(row=3, column=0, sticky='NSEW')
+        self.OKButton.grid(row=4, column=0, columnspan=2, sticky='NSEW')
 
     def Confirm(self):
         fromDate = self.DateFrom.get()
@@ -57,22 +66,36 @@ class ExportToGraphsForm:
 
     def CreateGraph(self, timeRecords, fromdate, todate):
         # Make a fake dataset:
-        records = (From(timeRecords).groupBy(
-            lambda x: x.Project,
-            transform=lambda x: x.Minutes
-        ))
-
+        projectIndex = self.ProjectsCombo.current()
         bars = []
         height = []
-        for record in records:
-            bars.append(record.key)
-            height.append(From(record).sum(lambda x: x)/60)
-        print(bars)
-        print(height)
+        fileName = ""
+        if projectIndex == -1:
+            records = (From(timeRecords).groupBy(
+                lambda x: x.Project,
+                transform=lambda x: x.Minutes
+            ))
+
+            for record in records:
+                bars.append(record.key)
+                height.append(From(record).sum(lambda x: x)/60)
+            fileName = "data from " + fromdate + "-" + todate
+        else:
+            records = (From(timeRecords).where(lambda x: x.Project ==
+                                               self.Cache.ActiveProjects[projectIndex].Description)).toList()
+            records = (From(records).groupBy(
+                lambda x: x.Description,
+                transform=lambda x: x.Minutes
+            ))
+            for record in records:
+                bars.append(record.key)
+                height.append(From(record).sum(lambda x: x)/60)
+            fileName = "data from " + fromdate + "-" + todate + " for project " + \
+                self.Cache.ActiveProjects[projectIndex].Description
 
         data = [go.Bar(
             x=bars,
             y=height
         )]
 
-        py.plot(data, filename="data from " + fromdate + "-" + todate)
+        py.plot(data, filename=fileName)
