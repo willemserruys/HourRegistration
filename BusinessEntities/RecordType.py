@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 
 
 class RecordType(DataBaseConnection.Base):
-    __tablename__ = "tblRecordType"
+    __tablename__ = "RecordType"
     ID = Column(Integer, primary_key=True)
     Description = Column(String, nullable=False)
     ExterneID = Column(String, nullable=False)

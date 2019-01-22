@@ -21,8 +21,6 @@ class DataBaseConnection():
             'sqlite:///HourRegistration.db', echo=True)
         session = sessionmaker(bind=self.Engine)
         self.Session = session()
-        cursor = self.Session.Connection.Cursor()
-        cursor.Execute("PRAGMA foreign_keys=ON")
         Logger.LogInfo('DataBase Connection Established')
         # except Exception as e:
         #   Logger.LogError(str(e))
